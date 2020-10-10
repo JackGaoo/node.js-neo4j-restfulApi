@@ -1,15 +1,15 @@
-const neo4j = require('neo4j-driver').v1;
 const uuid = require('uuid/v4');
+const neo4j = require('neo4j-driver').v1;
 
-const url = process.env.GRAPHENEDB_BOLT_URL;
-const user = process.env.GRAPHENEDB_BOLT_USER;
-const pass = process.env.GRAPHENEDB_BOLT_PASSWORD;
+const graphenedbURL = process.env.GRAPHENEDB_BOLT_URL;
+const graphenedbUser = process.env.GRAPHENEDB_BOLT_USER;
+const graphenedbPass = process.env.GRAPHENEDB_BOLT_PASSWORD;
 
 
 class Neo4jApi {
 
   constructor() {
-    this.driver = neo4j.driver(url, neo4j.auth.basic(user, pass));
+    this.driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
   }
 
   createNode(name) {
