@@ -9,7 +9,9 @@ const graphenedbPass = process.env.GRAPHENEDB_BOLT_PASSWORD;
 class Neo4jApi {
 
   constructor() {
-    this.driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass));
+    this.driver = neo4j.driver(graphenedbURL, neo4j.auth.basic(graphenedbUser, graphenedbPass), {
+      encrypted: 'ENCRYPTION_ON'
+    });
   }
 
   createNode(name) {
