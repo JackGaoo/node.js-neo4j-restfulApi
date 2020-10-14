@@ -33,18 +33,14 @@ class Neo4jApi {
     return resp;
   }
 
-  getNodes(name) {
+  getNodes() {
     const session = this.driver.session();
 
     const promise = new Promise((resolve, reject) => {
       session
         .run(`
-            MATCH (n:EXPRESS_SAMPLE_NAME {
-            name: {name}
-            })
-            RETURN n`, {
-              name,
-            })
+            MATCH (n:EXPRESS_SAMPLE_NAME)
+            RETURN n`)
         .then((result) => {
           session.close();
           resolve(result.records

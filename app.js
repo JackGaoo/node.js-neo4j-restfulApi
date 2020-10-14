@@ -15,23 +15,18 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/hello', (req, res) => {
-  console.log("hello");
-});
-
-app.post('/getParam', (req, res) => {
-  console.log(req.body.parm);
-  /*
-  db.getNodes(name)
+app.get('/', (req, res) => {
+  console.log("get nodes");
+  db.getNodes ()
     .then((nodes) => {
       res.render('./home.pug', { nodes });
     })
     .catch(error => res.status(404).send(error));
-*/
 });
 
 app.post('/', (req, res) => {
   const name = req.body.name;
+  console.log(name);
   db.createNode(name)
     .then(() => res.redirect('/'))
     .catch(error => res.status(500).send(error));
