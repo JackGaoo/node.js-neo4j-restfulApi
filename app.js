@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+
 dotenv.config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -12,13 +13,17 @@ const port = process.env.PORT;
 
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  db.getNodes()
+app.post('/getParam', (req, res) => {
+  console.log(req.body.parm);
+  /*
+  db.getNodes(name)
     .then((nodes) => {
       res.render('./home.pug', { nodes });
     })
-    .catch(error => res.status(500).send(error));
+    .catch(error => res.status(404).send(error));
+*/
 });
 
 app.post('/', (req, res) => {
