@@ -19,7 +19,8 @@ app.get('/', (req, res) => {
   console.log("get nodes");
   db.getNodes ()
     .then((nodes) => {
-      res.render('./home.pug', { nodes });
+      res.json(nodes);
+      //res.render('./home.pug', { nodes });
     })
     .catch(error => res.status(404).send(error));
 });
@@ -30,6 +31,17 @@ app.post('/', (req, res) => {
   db.createNode(name)
     .then(() => res.redirect('/'))
     .catch(error => res.status(500).send(error));
+});
+
+app.get('/search', (req, res) => {
+  console.log("get nodes");
+  const name = req.body.name;
+  db.get_one_Node(name)
+    .then((nodes) => {
+      res.json(nodes);
+      //res.render('./home.pug', { nodes });
+    })
+    .catch(error => res.status(404).send(error));
 });
 
 app.post('/clear', (req, res) => {

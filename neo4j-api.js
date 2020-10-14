@@ -55,6 +55,30 @@ class Neo4jApi {
     return promise;
   }
 
+  get_one_Node(name) {
+    const session = this.driver.session();
+
+    const promise = new Promise((resolve, reject) => {
+      session
+        .run(`
+            MATCH (n:EXPRESS_SAMPLE_NAME)
+            WHERE n.name={name} 
+            RETURN n`, {
+              name,
+            })
+        .then((result) => {
+          session.close();
+          resolve(result.records
+            .map(record => record._fields[0].properties));
+        })
+        .catch((error) => {
+          session.close();
+          reject(error);
+        });
+    });
+
+    return promise;
+  }
   clearNodes() {
     const session = this.driver.session();
     return session.run(`
