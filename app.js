@@ -13,7 +13,11 @@ const port = process.env.PORT;
 
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.json());
+
+app.get('/hello', (req, res) => {
+  console.log("hello");
+});
 
 app.post('/getParam', (req, res) => {
   console.log(req.body.parm);
