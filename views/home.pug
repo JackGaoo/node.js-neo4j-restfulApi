@@ -39,41 +39,41 @@ html
               each node in nodes
                 tr
                   td= node.name
-                  td= node.uuid
+                  //td= node.uuid
 
-        h3 Search for nodes
-
-        form(action="/search", method="post")
-          label(for="nameInput")
-          //script.
-          //  function get_one_node(){
-          //    if (fnodes.length == 0)
-          //      print("You dont have any nodes.")
-          //    else
-          //      print(fnodes.name);
-          //  }
-          div.row
-            div.six.columns
-              input.u-full-width(name="name", type="text", placeholder="Enter node name", autofocus)
-            div.six.columns
-              input.button-primary.u-full-width(type="submit", value="Search Node")
-
-        h3 Result of nodes
-
-        //if f_nodes.length == 0
-        //  p You don't have any nodes yet.
-
-        if f_nodes != 0
-          table.u-full-width
-            thead
-              tr
-                th Name
-                //th UUID
-            tbody
-              each f_node in f_nodes
-                tr
-                  td= f_node.name
-                  //td= nodes.uuid
+        //h3 Search for nodes
+        //
+        //form(action="/search", method="post")
+        //  label(for="nameInput")
+        //  //script.
+        //  //  function get_one_node(){
+        //  //    if (fnodes.length == 0)
+        //  //      print("You dont have any nodes.")
+        //  //    else
+        //  //      print(fnodes.name);
+        //  //  }
+        //  div.row
+        //    div.six.columns
+        //      input.u-full-width(name="name", type="text", placeholder="Enter node name", autofocus)
+        //    div.six.columns
+        //      input.button-primary.u-full-width(type="submit", value="Search Node")
+        //
+        //h3 Result of nodes
+        //
+        ////if f_nodes.length == 0
+        ////  p You don't have any nodes yet.
+        //
+        //if f_nodes != 0
+        //  table.u-full-width
+        //    thead
+        //      tr
+        //        th Name
+        //        //th UUID
+        //    tbody
+        //      each f_node in f_nodes
+        //        tr
+        //          td= f_node.name
+        //          //td= nodes.uuid
 
 
 

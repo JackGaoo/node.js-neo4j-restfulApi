@@ -39,7 +39,7 @@ class Neo4jApi {
     const promise = new Promise((resolve, reject) => {
       session
         .run(`
-            MATCH (n:EXPRESS_SAMPLE_NAME)
+            MATCH (n:Condition)
             RETURN n`)
         .then((result) => {
           session.close();
@@ -61,7 +61,7 @@ class Neo4jApi {
     const promise = new Promise((resolve, reject) => {
       session
         .run(`
-            MATCH (n:EXPRESS_SAMPLE_NAME)
+            MATCH (n)
             WHERE n.name={name} 
             RETURN n`, {
               name,
