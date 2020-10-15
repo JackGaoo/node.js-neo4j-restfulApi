@@ -61,9 +61,8 @@ class Neo4jApi {
     const promise = new Promise((resolve, reject) => {
       session
         .run(`
-            MATCH (n)
-            WHERE n.name={name} 
-            RETURN n`, {
+            MATCH (con:Condition)-[:has_symptom]-(sy:Symptom{name:{name}})
+            RETURN con`, {
               name,
             })
         .then((result) => {
