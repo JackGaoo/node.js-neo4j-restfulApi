@@ -78,6 +78,30 @@ class Neo4jApi {
 
     return promise;
   }
+
+  nodeSize(name) {
+    const session = this.driver.session();
+    const promise = new Promise((resolve, reject) => {
+      session
+        .run(`
+            MATCH (con1:Condition) WHERE con1.name = {name}
+            RETURN con1,size((con1)--()) as count`, {
+              name,
+        })
+        .then((result) => {
+          session.close();
+          resolve(result.records
+            .map(record => record._fields[1].low));
+        })
+        .catch((error) => {
+          session.close();
+          reject(error);
+        });
+    });
+
+    return promise;
+  }
+
   clearNodes() {
     const session = this.driver.session();
     return session.run(`
