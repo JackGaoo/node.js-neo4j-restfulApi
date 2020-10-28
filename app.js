@@ -33,7 +33,7 @@ app.post('/', (req, res) => {
     .catch(error => res.status(500).send(error));
 });
 
-app.get('/search', async (req, res) => {
+app.post('/search', async (req, res) => {
   const name = req.body.name;
   let results = [];
   for (let i = 0; i < name.length; i++) {
