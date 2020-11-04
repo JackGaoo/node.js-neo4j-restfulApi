@@ -15,6 +15,7 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+/*
 app.get('/Diagnosis', (req, res) => {
   const name = req.body.name;
   db.getSymptoms (name)
@@ -23,6 +24,7 @@ app.get('/Diagnosis', (req, res) => {
     })
     .catch(error => res.status(404).send(error));
 });
+ */
 
 app.post('/create', (req, res) => {
   const name = req.body.name;
@@ -32,12 +34,15 @@ app.post('/create', (req, res) => {
     .catch(error => res.status(500).send(error));
 });
 
-app.post('/Diagnosis/prob', async (req, res) => {
-  const name = req.body.name;
+app.post('/Diagnosis', async (req, res) => {
+  const symptoms = req.body.symp;
+  if (req.body.flag === 1) {
+    const answer = req.body.answer;
+  }
   let results = [];
-  for (let i = 0; i < name.length; i++) {
+  for (let i = 0; i < symptoms.length; i++) {
     console.log("get one node");
-    await db.getCondition(name[i])
+    await db.getCondition(symptoms[i])
       .then((nodes) => {
         //console.log(typeof(nodes));
         results = results.concat(nodes);
@@ -53,13 +58,13 @@ app.post('/Diagnosis/prob', async (req, res) => {
       disease_count[name] += 1;
     } else {
       // add to size object at first seen
+      disease_count[name] = 1;
       await db.nodeSize(name)
         .then((n_children) => {
           numSymp[name] = n_children[0];
 
         })
         .catch(error => res.status(500).send(error));
-      disease_count[name] = 1;
     }
   }
   // divide occurrence by number of symptoms under a disease
@@ -68,17 +73,18 @@ app.post('/Diagnosis/prob', async (req, res) => {
   }
   // console.log(disease_count);
 
+  /*
   //get the highest probability
   let list = new Array();
   for (let i in disease_count){
     list.push(disease_count[i]);
-    }
-    list.sort(function(num1,num2){
-      return num2-num1;
-    })
-    //console.log(list);
-    var maxcnt= eval(list[0]);
-    console.log(maxcnt);
+  }
+  list.sort(function(num1,num2){
+    return num2-num1;
+  })
+  //console.log(list);
+  let maxcnt= eval(list[0]);
+  console.log(maxcnt);
 
   //sort the probabilities from big to small by condition names
   key = Object.keys(disease_count).sort(function (a, b){
@@ -88,30 +94,47 @@ app.post('/Diagnosis/prob', async (req, res) => {
   res.json(key);
   // all["prob"] = disease_count;
   // all["Highest"] = maxcnt;
+  */
 
+  // use reduce to find the condition with max probability
   //get the highest disease with symptoms
-  let currDisease = key[0];
+  let currDisease = Object.keys(disease_count)
+                          .reduce(function(a, b){
+                              return disease_count[a] > disease_count[b] ? a : b
+                          });
+  console.log(currDisease, disease_count[currDisease]);
   let currSymps = {};
   await db.getSymptoms (currDisease)
     .then((name) => {
       currSymps = name;
-      console.log(currSymps);
-
     })
     .catch(error => res.status(404).send(error));
 
   //exclude the mentioned symptoms
-  const Symps = {};
-  currSymps.forEach(function(al){Symps[al]=al;})
-  name.forEach(function(bl){delete Symps[bl];})
-  uni_Symps = Object.values(Symps);
-  console.log(uni_Symps);
+  currSymps = currSymps.filter(function (symp) {
+    return !symptoms.includes(symp);
+  });
+
+  // build question object
+  const question = {};
+  question.text = "Do you have this symptom? "+currSymps[0];
+  question.item = {};
+  question.item.name = currSymps[0];
+  question.item.choices = [{"id": "present",
+                            "label": "Yes"},
+                           {"id": "absent",
+                            "label": "No"}];
+
+  let finalReturn = {"question": question, "probability": disease_count};
+  res.json(finalReturn);
+
+  /*
   //choose the first symptom to ask
   let all_sym = {};
   let label;
   let flag;
-  for (let i = 0; i < uni_Symps.length; i++){
-    let question = ["Do you have the following symptoms?"+uni_Symps[i]];
+  for (let i = 0; i < currSymps.length; i++){
+    let question = ["Do you have the following symptoms?"+currSymps[i]];
     console.log(question);
     if (label == "Yes"){
         flag = 1;//If the patient has the symptom.
@@ -119,15 +142,13 @@ app.post('/Diagnosis/prob', async (req, res) => {
         flag = 0;//If the patient dont have the symptom.
     }
     if (flag == 1){
-      all_sym = all_sym.append(uni_Symps[i]);
+      all_sym = all_sym.append(currSymps[i]);
 
     }else {
       continue;
     }
   }
-
-
-
+   */
 })
 
 // // calculate prob after Dialogflow
