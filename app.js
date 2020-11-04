@@ -31,7 +31,6 @@ app.post('/Diagnosis', async (req, res) => {
     let answers = req.body.answers;
     for (let item of answers) {
       for (const [condition, response] of Object.entries(item)) {
-        console.log(response);
         if (response === "yes") {
           symptoms = symptoms.concat(condition);
         }
@@ -39,8 +38,6 @@ app.post('/Diagnosis', async (req, res) => {
       }
     }
   }
-  console.log(symptoms);
-  console.log(seen);
   let results = [];
   for (let i = 0; i < symptoms.length; i++) {
     console.log("get one symptom");
