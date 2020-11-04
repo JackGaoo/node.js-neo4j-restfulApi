@@ -15,17 +15,6 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-/*
-app.get('/Diagnosis', (req, res) => {
-  const name = req.body.name;
-  db.getSymptoms (name)
-    .then((name) => {
-      res.json(name);
-    })
-    .catch(error => res.status(404).send(error));
-});
- */
-
 app.post('/create', (req, res) => {
   const name = req.body.name;
   console.log(name);
@@ -35,13 +24,26 @@ app.post('/create', (req, res) => {
 });
 
 app.post('/Diagnosis', async (req, res) => {
-  const symptoms = req.body.symp;
+  let symptoms = req.body.symp;
+  // to record all seen symptoms
+  let seen = symptoms;
   if (req.body.flag === 1) {
-    const answer = req.body.answer;
+    let answers = req.body.answers;
+    for (let item of answers) {
+      for (const [condition, response] of Object.entries(item)) {
+        console.log(response);
+        if (response === "yes") {
+          symptoms = symptoms.concat(condition);
+        }
+        seen = seen.concat(condition);
+      }
+    }
   }
+  console.log(symptoms);
+  console.log(seen);
   let results = [];
   for (let i = 0; i < symptoms.length; i++) {
-    console.log("get one node");
+    console.log("get one symptom");
     await db.getCondition(symptoms[i])
       .then((nodes) => {
         //console.log(typeof(nodes));
@@ -72,30 +74,6 @@ app.post('/Diagnosis', async (req, res) => {
     disease_count[key] /= (value / 100); // a*100 / b == a / (b/100)
   }
   // console.log(disease_count);
-
-  /*
-  //get the highest probability
-  let list = new Array();
-  for (let i in disease_count){
-    list.push(disease_count[i]);
-  }
-  list.sort(function(num1,num2){
-    return num2-num1;
-  })
-  //console.log(list);
-  let maxcnt= eval(list[0]);
-  console.log(maxcnt);
-
-  //sort the probabilities from big to small by condition names
-  key = Object.keys(disease_count).sort(function (a, b){
-    return disease_count[b] - disease_count[a]
-  })
-  console.log(key);
-  res.json(key);
-  // all["prob"] = disease_count;
-  // all["Highest"] = maxcnt;
-  */
-
   // use reduce to find the condition with max probability
   //get the highest disease with symptoms
   let currDisease = Object.keys(disease_count)
@@ -112,7 +90,7 @@ app.post('/Diagnosis', async (req, res) => {
 
   //exclude the mentioned symptoms
   currSymps = currSymps.filter(function (symp) {
-    return !symptoms.includes(symp);
+    return !seen.includes(symp);
   });
 
   // build question object
@@ -127,75 +105,7 @@ app.post('/Diagnosis', async (req, res) => {
 
   let finalReturn = {"question": question, "probability": disease_count};
   res.json(finalReturn);
-
-  /*
-  //choose the first symptom to ask
-  let all_sym = {};
-  let label;
-  let flag;
-  for (let i = 0; i < currSymps.length; i++){
-    let question = ["Do you have the following symptoms?"+currSymps[i]];
-    console.log(question);
-    if (label == "Yes"){
-        flag = 1;//If the patient has the symptom.
-    }else{
-        flag = 0;//If the patient dont have the symptom.
-    }
-    if (flag == 1){
-      all_sym = all_sym.append(currSymps[i]);
-
-    }else {
-      continue;
-    }
-  }
-   */
 })
-
-// // calculate prob after Dialogflow
-// app.post("/Diagnosis", async (req, res) => {
-//   // get symptoms
-//
-//   // get the disease with highest probability and then get all its symptoms
-//   currDisease = "xxxx";
-//   currSymps = ["aa", "bb", "cc", "dd", "ee"];  // return all symptoms of a disease
-//   // exclude mentioned symptoms
-//   currSymps = currSymps - name;
-//   // choose first symptom to ask
-//   let symp = currSymps[0];
-//   let question = {......};
-//   // return prob and question
-//   res.json(returned_json);
-// })
-//
-// // obtain answer and re-calculate probability
-// app.post("/Diagnosis/QA", async (req, res) => {
-//   const symp = req.body.name;
-//   const chioce = req.body.choice;
-//   if (chioce == "present") {
-//     occurrence[currDisease] += 1
-//   } // else the occurrence would not change
-//   // calculate probability using occurrence and numSymp
-//   for (const [key, value] of Object.entries(occurrence)) {
-//     prob[key] = occurrence[key] * 100 / numSymp[key];
-//   }
-//   // check if the probability of current disease is over 95%
-//   if (prob[currDisease] < 95) {
-//     // remove used symptom
-//     currSymps = currSymps - symp;
-//     // check how many symptoms left
-//     if (currSymps.length > 0) {
-//       // get first symptom and ask question again
-//       let symp = currSymps[0];
-//       let question = {......};
-//       // return prob and question
-//       res.json(returned_json);
-//     } else {
-//       // change to second most possible disease
-//
-//     }
-//   } else {
-//     res.json(final_result)
-//   }
 
 app.post('/clear', (req, res) => {
   db.clearNodes()
