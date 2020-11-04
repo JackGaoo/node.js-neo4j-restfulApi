@@ -128,7 +128,6 @@ app.post('/Diagnosis/prob', async (req, res) => {
 
 
 
-
 })
 
 // // calculate prob after Dialogflow

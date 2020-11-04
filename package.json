@@ -1,5 +1,5 @@
 {
-  "name": "neo4j-express-heroku-sample",
+  "name": "express-router-experiments",
   "version": "1.0.0",
   "description": "Sample project to deploy Neo4j+Express on Heroku",
   "scripts": {
@@ -10,12 +10,7 @@
   "license": "MIT",
   "repository": "git@github.com:visby/neo4j-express-heroku-sample.git",
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "dotenv": "^2.0.0",
-    "express": "^4.14.0",
-    "neo4j-driver": "^1.7.7",
-    "pug": "^2.0.0-beta6",
-    "uuid": "^3.0.1"
+    "express": "~4.0.0"
   },
   "devDependencies": {
     "eslint": "^3.12.2",
@@ -23,9 +18,5 @@
     "eslint-plugin-import": "^2.2.0",
     "nodemon": "^2.0.5"
   },
-  "name": "express-router-experiments",
-  "main": "server.js",
-  "dependencies": {
-    "express": "~4.0.0"
-  }
+  "main": "server.js"
 }
