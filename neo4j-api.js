@@ -29,18 +29,18 @@ class Neo4jApi {
 
     resp.then(() => session.close())
       .catch(() => session.close());
-
     return resp;
   }
 
-  getNodes() {
+  getNodes(name) {
     const session = this.driver.session();
-
     const promise = new Promise((resolve, reject) => {
       session
         .run(`
-            MATCH (n:Condition)
-            RETURN n`)
+           MATCH (sy:Symptom)-[:has_symptom]-(con:Condition{name:{name}})
+            RETURN sy`, {
+          name,
+        })
         .then((result) => {
           session.close();
           resolve(result.records
@@ -57,7 +57,6 @@ class Neo4jApi {
 
   get_one_Node(name) {
     const session = this.driver.session();
-
     const promise = new Promise((resolve, reject) => {
       session
         .run(`
