@@ -32,7 +32,7 @@ class Neo4jApi {
     return resp;
   }
 
-  getNodes(name) {
+  getSymptoms(name) {
     const session = this.driver.session();
     const promise = new Promise((resolve, reject) => {
       session
@@ -44,7 +44,7 @@ class Neo4jApi {
         .then((result) => {
           session.close();
           resolve(result.records
-            .map(record => record._fields[0].properties));
+            .map(record => record._fields[0].properties.name));
         })
         .catch((error) => {
           session.close();
@@ -55,7 +55,7 @@ class Neo4jApi {
     return promise;
   }
 
-  get_one_Node(name) {
+  getCondition(name) {
     const session = this.driver.session();
     const promise = new Promise((resolve, reject) => {
       session

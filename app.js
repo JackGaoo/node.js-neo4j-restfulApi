@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 app.get('/Diagnosis', (req, res) => {
   const name = req.body.name;
-  db.getNodes (name)
+  db.getSymptoms (name)
     .then((name) => {
       res.json(name);
     })
@@ -37,7 +37,7 @@ app.post('/Diagnosis/prob', async (req, res) => {
   let results = [];
   for (let i = 0; i < name.length; i++) {
     console.log("get one node");
-    await db.get_one_Node(name[i])
+    await db.getCondition(name[i])
       .then((nodes) => {
         //console.log(typeof(nodes));
         results = results.concat(nodes);
@@ -45,7 +45,6 @@ app.post('/Diagnosis/prob', async (req, res) => {
       .catch(error => res.status(404).send(error));
   }
   // loop result array to count the occurrence of each disease
-  let all = {};
   let disease_count = {};
   let numSymp = {};
   for (let disease of results) {
@@ -93,7 +92,7 @@ app.post('/Diagnosis/prob', async (req, res) => {
   //get the highest disease with symptoms
   let currDisease = key[0];
   let currSymps = {};
-  await db.getNodes (currDisease)
+  await db.getSymptoms (currDisease)
     .then((name) => {
       currSymps = name;
       console.log(currSymps);
@@ -101,11 +100,33 @@ app.post('/Diagnosis/prob', async (req, res) => {
     })
     .catch(error => res.status(404).send(error));
 
+  //exclude the mentioned symptoms
+  const Symps = {};
+  currSymps.forEach(function(al){Symps[al]=al;})
+  name.forEach(function(bl){delete Symps[bl];})
+  uni_Symps = Object.values(Symps);
+  console.log(uni_Symps);
+  //choose the first symptom to ask
+  let all_sym = {};
+  let label;
+  let flag;
+  for (let i = 0; i < uni_Symps.length; i++){
+    let question = ["Do you have the following symptoms?"+uni_Symps[i]];
+    console.log(question);
+    if (label == "Yes"){
+        flag = 1;//If the patient has the symptom.
+    }else{
+        flag = 0;//If the patient dont have the symptom.
+    }
+    if (flag == 1){
+      all_sym = all_sym.append(uni_Symps[i]);
 
-  // const uni_Symps = {};
-  // currSymps.forEach(function(al){uni_Symps[al]=al;})
-  // name.forEach(function(bl){delete uni_Symps[bl];})
-  // console.log(uni_Symps);
+    }else {
+      continue;
+    }
+  }
+
+
 
 
 })
