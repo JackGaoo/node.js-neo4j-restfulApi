@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const Neo4jApi = require('./neo4j-api');
-const rountes = require('./route')
+// const rountes = require('./route')
 
 const app = express();
 const db = new Neo4jApi();
