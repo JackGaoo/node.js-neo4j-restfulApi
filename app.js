@@ -11,8 +11,11 @@ const app = express();
 const db = new Neo4jApi();
 const port = process.env.PORT;
 
+module.exports = app
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 
 app.post('/Diagnosis', async (req, res) => {
   let symptoms = req.body.symp;
