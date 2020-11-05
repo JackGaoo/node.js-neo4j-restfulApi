@@ -37,7 +37,7 @@ class Neo4jApi {
     return promise;
   }
 
-  getCondition(name) {
+  getConditions(name) {
     const session = this.driver.session();
     const promise = new Promise((resolve, reject) => {
       session

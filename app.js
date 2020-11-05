@@ -22,7 +22,7 @@ app.post('/Diagnosis', async (req, res) => {
     let answers = req.body.answers;
     for (let item of answers) {
       for (const [condition, response] of Object.entries(item)) {
-        console.log(response);
+        //console.log(response);
         if (response === "yes") {
           symptoms = symptoms.concat(condition);
         }
@@ -30,12 +30,12 @@ app.post('/Diagnosis', async (req, res) => {
       }
     }
   }
-  console.log(symptoms);
-  console.log(seen);
+  //console.log(symptoms);
+  //console.log(seen);
   let results = [];
   for (let i = 0; i < symptoms.length; i++) {
     console.log("get one symptom");
-    await db.getCondition(symptoms[i])
+    await db.getConditions(symptoms[i])
       .then((nodes) => {
         //console.log(typeof(nodes));
         results = results.concat(nodes);
@@ -77,8 +77,8 @@ app.post('/Diagnosis', async (req, res) => {
                           .sort(function (a, b){
                               return disease_count[b] - disease_count[a];
                           });
-  for( let i = 0; i <= sortDisease.length; i++){
-  sort_Disease_count[sortDisease[i]] = disease_count[sortDisease[i]];
+  for(let i = 0; i < sortDisease.length; i++){
+    sort_Disease_count[sortDisease[i]] = disease_count[sortDisease[i]];
   }
   console.log(sort_Disease_count);
   //console.log(disease_count[currDisease]);
