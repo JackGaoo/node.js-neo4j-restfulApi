@@ -79,7 +79,6 @@ class Neo4jApi {
           reject(error);
         });
     });
-
     return promise;
   }
 
