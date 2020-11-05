@@ -71,15 +71,15 @@ app.post('/Diagnosis', async (req, res) => {
                           .reduce(function(a, b){
                               return disease_count[a] > disease_count[b] ? a : b
                           });
-//sort the probabilities from big to small
+  //sort the probabilities from big to small
   let sort_Disease_count = {};
   let sortDisease = Object.keys(disease_count)
                           .sort(function (a, b){
                               return disease_count[b] - disease_count[a];
                           });
-for( let i = 0; i <= sortDisease.length; i++){
+  for( let i = 0; i <= sortDisease.length; i++){
   sort_Disease_count[sortDisease[i]] = disease_count[sortDisease[i]];
-}
+  }
   console.log(sort_Disease_count);
   //console.log(disease_count[currDisease]);
   console.log(currDisease, disease_count[currDisease]);
