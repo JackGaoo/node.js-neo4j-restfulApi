@@ -14,24 +14,6 @@ class Neo4jApi {
     });
   }
 
-  createNode(name) {
-    const session = this.driver.session();
-    const resp = session
-      .run(`
-          CREATE (n:EXPRESS_SAMPLE_NAME {
-            name: {name},
-            uuid: {uuid}
-          })
-          RETURN n.name`, {
-            name,
-            uuid: uuid(),
-          });
-
-    resp.then(() => session.close())
-      .catch(() => session.close());
-    return resp;
-  }
-
   getSymptoms(name) {
     const session = this.driver.session();
     const promise = new Promise((resolve, reject) => {
@@ -99,13 +81,6 @@ class Neo4jApi {
     });
 
     return promise;
-  }
-
-  clearNodes() {
-    const session = this.driver.session();
-    return session.run(`
-        MATCH (n:EXPRESS_SAMPLE_NAME)
-        DELETE n`);
   }
 
   close() {

@@ -11,17 +11,8 @@ const app = express();
 const db = new Neo4jApi();
 const port = process.env.PORT;
 
-app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-app.post('/create', (req, res) => {
-  const name = req.body.name;
-  console.log(name);
-  db.createNode(name)
-    .then(() => res.redirect('/'))
-    .catch(error => res.status(500).send(error));
-});
 
 app.post('/Diagnosis', async (req, res) => {
   let symptoms = req.body.symp;
@@ -107,12 +98,6 @@ app.post('/Diagnosis', async (req, res) => {
   let finalReturn = {"question": question, "probability": disease_count};
   res.json(finalReturn);
 })
-
-app.post('/clear', (req, res) => {
-  db.clearNodes()
-    .then(() => res.redirect('/'))
-    .catch(error => res.status(500).send(error));
-});
 
 app.listen(port,
   () => console.log(`Server listening on http://localhost:${port}`));
