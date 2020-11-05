@@ -5,7 +5,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const Neo4jApi = require('./neo4j-api');
-// const rountes = require('./route')
 
 const app = express();
 const db = new Neo4jApi();
@@ -26,7 +25,7 @@ app.post('/Diagnosis', async (req, res) => {
     for (let item of answers) {
       for (const [condition, response] of Object.entries(item)) {
         //console.log(response);
-        if (response === "yes") {
+        if (response === "1") {
           symptoms = symptoms.concat(condition);
         }
         seen = seen.concat(condition);
@@ -86,11 +85,12 @@ app.post('/Diagnosis', async (req, res) => {
   //console.log(sort_Disease_count);
   //console.log(disease_count[currDisease]);
   console.log(currDisease, disease_count[currDisease]);
-  let endDiagnose = false;
+  let endDiagnose = 0;
   let finalReturn = {};
   if (disease_count[currDisease] >= 95) {
-    endDiagnose = true;
-    finalReturn = {"endDiagnose": endDiagnose, "probability": sort_Disease_count};
+    endDiagnose = 1;
+    finalReturn = {"probability": sort_Disease_count,
+                   "endDiagnose": endDiagnose};
     res.json(finalReturn);
   } else {
     let currSymps = {};
@@ -115,7 +115,9 @@ app.post('/Diagnosis', async (req, res) => {
       {"id": "absent",
         "label": "No"}];
 
-    finalReturn = {"question": question, "probability": sort_Disease_count};
+    finalReturn = { "question": question,
+                    "probability": sort_Disease_count,
+                    "endDiagnose": endDiagnose};
     res.json(finalReturn);
   }
 })
