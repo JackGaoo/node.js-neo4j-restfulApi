@@ -31,6 +31,7 @@ app.post('/Diagnosis', async (req, res) => {
     let answers = req.body.answers;
     for (let item of answers) {
       for (const [condition, response] of Object.entries(item)) {
+        console.log(response);
         if (response === "yes") {
           symptoms = symptoms.concat(condition);
         }
@@ -38,6 +39,8 @@ app.post('/Diagnosis', async (req, res) => {
       }
     }
   }
+  console.log(symptoms);
+  console.log(seen);
   let results = [];
   for (let i = 0; i < symptoms.length; i++) {
     console.log("get one symptom");
@@ -70,13 +73,14 @@ app.post('/Diagnosis', async (req, res) => {
   for (const [key, value] of Object.entries(numSymp)) {
     disease_count[key] /= (value / 100); // a*100 / b == a / (b/100)
   }
-  // console.log(disease_count);
+  console.log(disease_count);
   // use reduce to find the condition with max probability
   //get the highest disease with symptoms
   let currDisease = Object.keys(disease_count)
                           .reduce(function(a, b){
                               return disease_count[a] > disease_count[b] ? a : b
                           });
+  //console.log(disease_count[currDisease]);
   console.log(currDisease, disease_count[currDisease]);
   let currSymps = {};
   await db.getSymptoms (currDisease)
