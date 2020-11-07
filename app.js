@@ -5,14 +5,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const Neo4jApi = require('./neo4j-api');
-// const rountes = require('./route')
 
 const app = express();
 const db = new Neo4jApi();
 const port = process.env.PORT;
 
+// Export for testing usage
+module.exports = app
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 
 app.post('/Diagnosis', async (req, res) => {
   let symptoms = req.body.symp;
@@ -23,7 +26,7 @@ app.post('/Diagnosis', async (req, res) => {
     for (let item of answers) {
       for (const [condition, response] of Object.entries(item)) {
         //console.log(response);
-        if (response === "yes") {
+        if (response === "1") {
           symptoms = symptoms.concat(condition);
         }
         seen = seen.concat(condition);
@@ -64,9 +67,9 @@ app.post('/Diagnosis', async (req, res) => {
   for (const [key, value] of Object.entries(numSymp)) {
     disease_count[key] /= (value / 100); // a*100 / b == a / (b/100)
   }
-  console.log(disease_count);
+  //console.log(disease_count);
   // use reduce to find the condition with max probability
-  //get the highest disease with symptoms
+  // get the highest disease with symptoms
   let currDisease = Object.keys(disease_count)
                           .reduce(function(a, b){
                               return disease_count[a] > disease_count[b] ? a : b
@@ -80,33 +83,44 @@ app.post('/Diagnosis', async (req, res) => {
   for(let i = 0; i < sortDisease.length; i++){
     sort_Disease_count[sortDisease[i]] = disease_count[sortDisease[i]];
   }
-  console.log(sort_Disease_count);
+  //console.log(sort_Disease_count);
   //console.log(disease_count[currDisease]);
   console.log(currDisease, disease_count[currDisease]);
-  let currSymps = {};
-  await db.getSymptoms (currDisease)
-    .then((name) => {
-      currSymps = name;
-    })
-    .catch(error => res.status(404).send(error));
+  let endDiagnose = 0;
+  let finalReturn = {};
+  if (disease_count[currDisease] >= 95) {
+    endDiagnose = 1;
+    finalReturn = {"probability": sort_Disease_count,
+                   "endDiagnose": endDiagnose};
+    res.json(finalReturn);
+  } else {
+    let currSymps = {};
+    await db.getSymptoms (currDisease)
+      .then((name) => {
+        currSymps = name;
+      })
+      .catch(error => res.status(404).send(error));
 
-  //exclude the mentioned symptoms
-  currSymps = currSymps.filter(function (symp) {
-    return !seen.includes(symp);
-  });
+    //exclude the mentioned symptoms
+    currSymps = currSymps.filter(function (symp) {
+      return !seen.includes(symp);
+    });
 
-  // build question object
-  const question = {};
-  question.text = "Do you have this symptom? "+currSymps[0];
-  question.item = {};
-  question.item.name = currSymps[0];
-  question.item.choices = [{"id": "present",
-                            "label": "Yes"},
-                           {"id": "absent",
-                            "label": "No"}];
+    // build question object
+    const question = {};
+    question.text = "Do you have this symptom? "+currSymps[0];
+    question.item = {};
+    question.item.name = currSymps[0];
+    question.item.choices = [{"id": "present",
+      "label": "Yes"},
+      {"id": "absent",
+        "label": "No"}];
 
-  let finalReturn = {"question": question, "probability": sort_Disease_count};
-  res.json(finalReturn);
+    finalReturn = { "question": question,
+                    "probability": sort_Disease_count,
+                    "endDiagnose": endDiagnose};
+    res.json(finalReturn);
+  }
 })
 
 app.listen(port,
