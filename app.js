@@ -10,6 +10,7 @@ const app = express();
 const db = new Neo4jApi();
 const port = process.env.PORT;
 
+// Export for testing usage
 module.exports = app
 
 app.use(bodyParser.urlencoded({ extended: true }));
