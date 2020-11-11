@@ -17,27 +17,21 @@ app.use(bodyParser.json());
 
 
 app.post('/Diagnosis', async (req, res) => {
-  let symptoms = req.body.symp;
-  // to record all seen symptoms
-  let seen = symptoms;
+  let seen_symptoms = req.body.symp;
   if (req.body.flag === 1) {
     let answers = req.body.answers;
-    for (let item of answers) {
-      for (const [condition, response] of Object.entries(item)) {
-        //console.log(response);
-        if (response === "1") {
-          symptoms = symptoms.concat(condition);
-        }
-        seen = seen.concat(condition);
+    for (const [condition, response] of Object.entries(answers)) {
+      //console.log(condition, response);
+      if (response === 1) {
+        seen_symptoms = seen_symptoms.concat(condition);
       }
     }
   }
-  //console.log(symptoms);
-  //console.log(seen);
+  //console.log(seen_symptoms);
   let results = [];
-  for (let i = 0; i < symptoms.length; i++) {
+  for (let i = 0; i < seen_symptoms.length; i++) {
     console.log("get one symptom");
-    await db.getConditions(symptoms[i])
+    await db.getConditions(seen_symptoms[i])
       .then((nodes) => {
         //console.log(typeof(nodes));
         results = results.concat(nodes);
@@ -62,6 +56,7 @@ app.post('/Diagnosis', async (req, res) => {
         .catch(error => res.status(500).send(error));
     }
   }
+  //console.log(disease_count);
   // divide occurrence by number of symptoms under a disease
   for (const [key, value] of Object.entries(numSymp)) {
     disease_count[key] /= (value / 100); // a*100 / b == a / (b/100)
@@ -102,7 +97,7 @@ app.post('/Diagnosis', async (req, res) => {
 
     //exclude the mentioned symptoms
     currSymps = currSymps.filter(function (symp) {
-      return !seen.includes(symp);
+      return !seen_symptoms.includes(symp);
     });
 
     // build question object
