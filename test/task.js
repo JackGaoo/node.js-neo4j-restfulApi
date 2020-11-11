@@ -13,6 +13,20 @@ describe('Tasks API', ()=> {
    * Test POST
    */
   describe("POST /Diagnosis", () => {
+
+    it("Input random string as symtpom, expect 404 status", (done) => {
+      const task = (
+        {"flag":0, "symp": ["a"]}
+      );
+      chai.request(server)
+        .post("/Diagnosis")
+        .send(task)
+        .end((err, response) => {
+          response.should.have.status(404);
+          done();
+        });
+    });
+
     it("Input fever as symtpom", (done) => {
       const task = (
         {"flag":0, "symp": ["fever"]}
@@ -68,11 +82,10 @@ describe('Tasks API', ()=> {
 
 
   describe('Tasks API', ()=> {
-    /*
-    Test
-     */
+
     describe("POST /Diagnosis", () => {
-      it("When probability of any condition is greater than 95%, it should end diagnose.", (done) => {
+      it("When probability of any condition is greater than 95%, it should end diagnose.",
+        (done) => {
         const task = (
           {"flag":0, "symp": ["nausea","thin stools","belly bloating","watery stools","cramps"]}
         );
