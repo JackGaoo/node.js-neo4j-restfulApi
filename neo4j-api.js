@@ -49,7 +49,7 @@ class Neo4jApi {
         .then((result) => {
           session.close();
           resolve(result.records
-            .map(record => record._fields[0].properties));
+            .map(record => record._fields[0].properties.name));
         })
         .catch((error) => {
           session.close();

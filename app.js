@@ -42,8 +42,7 @@ app.post('/Diagnosis', async (req, res) => {
   // loop result array to count the occurrence of each disease
   let disease_count = {};
   let numSymp = {};
-  for (let disease of results) {
-    const name = disease.name;
+  for (let name of results) {
     if (disease_count.hasOwnProperty(name)) {
       disease_count[name] += 1;
     } else {
