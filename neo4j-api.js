@@ -1,4 +1,3 @@
-const uuid = require('uuid/v4');
 const neo4j = require('neo4j-driver').v1;
 
 const graphenedbURL = process.env.GRAPHENEDB_BOLT_URL;
