@@ -1,4 +1,3 @@
-const uuid = require('uuid/v4');
 const neo4j = require('neo4j-driver').v1;
 
 const graphenedbURL = process.env.GRAPHENEDB_BOLT_URL;
@@ -49,7 +48,7 @@ class Neo4jApi {
         .then((result) => {
           session.close();
           resolve(result.records
-            .map(record => record._fields[0].properties));
+            .map(record => record._fields[0].properties.name));
         })
         .catch((error) => {
           session.close();
