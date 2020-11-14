@@ -6,9 +6,6 @@
     "start": "nodemon app.js",
     "test": "mocha --timeout 10000"
   },
-  "author": "Marius Treitz <marius.treitz@gmail.com>",
-  "license": "MIT",
-  "repository": "git@github.com:visby/neo4j-express-heroku-sample.git",
   "dependencies": {
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",

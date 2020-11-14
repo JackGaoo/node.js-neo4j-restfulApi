@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/neo4j-express-heroku-master.iml" filepath="$PROJECT_DIR$/.idea/neo4j-express-heroku-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Disease_prob_API.iml" filepath="$PROJECT_DIR$/.idea/Disease_prob_API.iml" />
     </modules>
   </component>
 </project>
