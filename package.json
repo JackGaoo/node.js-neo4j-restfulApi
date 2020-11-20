@@ -1,7 +1,7 @@
 {
-  "name": "express-router-experiments",
+  "name": "Disease-API",
   "version": "1.0.0",
-  "description": "Sample project to deploy Neo4j+Express on Heroku",
+  "description": "An symptom diagnosis API on Heroku using Neo4j and NodeJS",
   "scripts": {
     "start": "nodemon app.js",
     "test": "mocha --timeout 10000"
