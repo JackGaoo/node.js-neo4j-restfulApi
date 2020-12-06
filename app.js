@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
-
 dotenv.config();
+// Express framework
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -10,7 +10,6 @@ const app = express();
 const db = new Neo4jApi();
 const port = process.env.PORT;
 
-// Export for testing usage
 module.exports = app
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,7 +29,7 @@ app.post('/Diagnosis', async (req, res) => {
       answered_symp = answered_symp.concat(condition);
     }
   }
-  //console.log(seen_symptoms);
+
   let results = [];
   for (let i = 0; i < seen_symptoms.length; i++) {
     console.log("get one symptom");
@@ -58,12 +57,11 @@ app.post('/Diagnosis', async (req, res) => {
         .catch(error => res.status(500).send(error));
     }
   }
-  //console.log(disease_count);
+  //Calculate the probabilities
   // divide occurrence by number of symptoms under a disease
   for (const [key, value] of Object.entries(numSymp)) {
     disease_count[key] /= (value / 100); // a*100 / b == a / (b/100)
   }
-  //console.log(disease_count);
   // use reduce to find the condition with max probability
   // get the highest disease with symptoms
   let currDisease = Object.keys(disease_count)
@@ -76,12 +74,13 @@ app.post('/Diagnosis', async (req, res) => {
                           .sort(function (a, b){
                               return disease_count[b] - disease_count[a];
                           });
+
+  //recalculate the probabilities
   for(let i = 0; i < sortDisease.length; i++){
     sort_Disease_count[sortDisease[i]] = disease_count[sortDisease[i]];
   }
-  //console.log(sort_Disease_count);
-  //console.log(disease_count[currDisease]);
   console.log(currDisease, disease_count[currDisease]);
+
   let endDiagnose = 0;
   let finalReturn = {};
   if (disease_count[currDisease] >= 95) {
@@ -90,6 +89,7 @@ app.post('/Diagnosis', async (req, res) => {
                    "endDiagnose": endDiagnose};
     res.json(finalReturn);
   } else {
+
     let currSymps = {};
     await db.getSymptoms (currDisease)
       .then((name) => {
