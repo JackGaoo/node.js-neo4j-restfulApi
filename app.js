@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 
 app.post('/Diagnosis', async (req, res) => {
   let seen_symptoms = req.body.symp;
+  let answered_symp = seen_symptoms;
   if (req.body.flag === 1) {
     let answers = req.body.answers;
     for (const [condition, response] of Object.entries(answers)) {
@@ -26,6 +27,7 @@ app.post('/Diagnosis', async (req, res) => {
       if (response === 1) {
         seen_symptoms = seen_symptoms.concat(condition);
       }
+      answered_symp = answered_symp.concat(condition);
     }
   }
   //console.log(seen_symptoms);
@@ -97,7 +99,7 @@ app.post('/Diagnosis', async (req, res) => {
 
     //exclude the mentioned symptoms
     currSymps = currSymps.filter(function (symp) {
-      return !seen_symptoms.includes(symp);
+      return !answered_symp.includes(symp);
     });
 
     // build question object
