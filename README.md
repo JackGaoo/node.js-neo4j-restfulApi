@@ -27,8 +27,8 @@ $ heroku login
 ```
 #### 7. Use Git to clone the project
 ```bash
-$ heroku git: clone -a capstone43
-$ cd capstone43
+$ heroku git: clone -a node.js-neo4j-restfulApi
+$ cd node.js-neo4j-restfulApi
 ```
 #### 8. Install all the dependencies
 ```bash
